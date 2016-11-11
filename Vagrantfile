@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
       node.vm.hostname = name
       node.vm.box_check_update = false
 
-      node.vm.synced_folder "./provision", "/provision"
+      node.vm.synced_folder ".", "/microcloud"
       node.vm.provider "virtualbox" do |vb|
         vb.gui = true
         vb.memory = "2048"
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
         service docker start
       SHELL
       node.vm.provision "ansible" do |ansible|
-        ansible.playbook = "./provision/provision.yml"
+        ansible.playbook = "./provision/ansible/base_packages.yml"
       end
     end
   end
