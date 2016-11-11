@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: standard packages
+      apt: name={{item}} state=installed
+      with_items:
+        - mc
+        - tmux
+        - mdadm
+        - rsync
+        - ethtool
+        - net-tools
+        - bridge-utils
+        - vim-nox
+        #       - dialog
