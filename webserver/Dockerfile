@@ -1,10 +1,13 @@
 FROM ubuntu:16.04
 
 RUN apt update  \
- && apt -y upgrade  \
- && apt install -y --no-install-recommends python-pip git \
- && git clone --depth=1 /microcloud /home/microcloud  \
+# TODO: uncomment && apt -y upgrade  \
+ && apt install -y --no-install-recommends \
+    git  \
+    python-pip  \
+    python-setuptools  \
+ && git clone --depth=1 https://github.com/kopchik/microcloud.git /microcloud  \
  && pip install --upgrade pip  \
- && pip install -r /home/microcloud/webserver/requirements.txt
+ && pip install -r /microcloud/webserver/requirements.txt
 
-CMD ["/home/microcloud/webserver/webserver.py"]
+CMD ["/microcloud/webserver/webserver.py"]
