@@ -2,12 +2,23 @@
 # vi: set ft=ruby :
 
 ENV["LC_ALL"] = "en_US.UTF-8"
-MYVMS = ["node1"] #, "node2"]
+MYVMS = [
+  {
+    name:"srv",
+    ip: "10.100.198.200",
+    playbook: "./provision/ansible/base_packages.yml"
+  },{
+    name: "node1",
+    ip: "10.100.198.201",
+    playbook: "./provision/ansible/base_packages.yml"
+  }
+]
 
 Vagrant.configure("2") do |config|
-  MYVMS.each do |i|
-    config.vm.define "#{i}" do |node|
-      name = i
+  MYVMS.each do |cfg|
+    config.vm.define "#{cfg[:name]}" do |node|
+      name = cfg[:name]
+      node.vm.network "private_network", ip: cfg[:ip]
       node.vm.box = "ubuntu/xenial64"
       node.vm.hostname = name
       node.vm.box_check_update = false
@@ -33,9 +44,13 @@ Vagrant.configure("2") do |config|
         apt install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
         apt install -y docker-engine
         service docker start
+
+        # docker compose
+        curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
       SHELL
       node.vm.provision "ansible" do |ansible|
-        ansible.playbook = "./provision/ansible/base_packages.yml"
+        ansible.playbook = cfg[:playbook]
       end
     end
   end
