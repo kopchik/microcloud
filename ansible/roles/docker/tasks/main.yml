@@ -1,0 +1,37 @@
+- name: packages required for apt-key
+  apt: name={{item}} state=installed
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+
+- name: docker apt key
+  apt_key: keyserver=hkp://p80.pool.sks-keyservers.net:80 id=58118E89F3A912897C070ADBF76221572C52609D state=present
+
+
+- name: repo with docker
+  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-xenial main' state=present
+
+
+- name: kernel headers etc (for docker)
+  apt: name=linux-image-extra-virtual state=installed
+
+
+- name: docker package
+  apt: name=docker-engine state=latest
+
+
+- name: docker service started
+  service: name=docker enabled=yes state=started
+
+
+- name: Docker Compose is present
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.8.1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+
+
+- name: Docker Compose permissions are set
+  file:
+    path: /usr/local/bin/docker-compose
+    mode: 0755

@@ -1,0 +1,15 @@
+- name: standard packages
+  apt: name={{item}} state=installed
+  with_items:
+    - mc
+    - tmux
+    - mdadm
+    - rsync
+    - ethtool
+    - net-tools
+    - bridge-utils
+    - vim-nox
+    #       - dialog
+
+- name: python for ansible
+  apt: name=python-minimal state=installed
